@@ -29,15 +29,10 @@
             steps{
             sshagent(['46d73466-13b7-4ec1-8a48-79278bde3816']) {
                     sh """
-                      docker pull public.ecr.aws/e5k4j6y8/test-ecr:\${BUILD_NUMBER}"""
-                      sh """docker ps -a | grep container1"""
-                      sh """if [ \$? == 0 ]
-                      then
-                      docker stop container1
-                      docker rmi container1
-                      else
+                      docker pull public.ecr.aws/e5k4j6y8/test-ecr:\${BUILD_NUMBER}
+              
                       docker run -d -p 8080:8080 --name container1 public.ecr.aws/e5k4j6y8/test-ecr:\${BUILD_NUMBER} 
-                      fi
+         
                       """
             }
             }

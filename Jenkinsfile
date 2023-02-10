@@ -1,11 +1,8 @@
     pipeline{
-     agent any {
-
-     }
      stages{
         stage("Checkout"){
             steps{
-                git branch: 'main', credentialId: "git_hub_cred_id", url: "https://github.com/govardhan34445/test-repo-ecr.git"
+                git branch: 'dev', credentialId: "git_hub_cred_id", url: "https://github.com/govardhan34445/test-repo-ecr.git"
             }
         }
         stage("Build Docker Image"){
@@ -25,13 +22,15 @@
             }
         }
         stage("Deploy container in server"){
-            sshagent(['46d73466-13b7-4ec1-8a48-79278bde3816	']) {
+            steps{
+            sshagent(['46d73466-13b7-4ec1-8a48-79278bde3816']) {
                     sh """
                       docker pull public.ecr.aws/e5k4j6y8/test-ecr:${BUILD_NUMBER}
                       docker stop container1
                       docker rmi container1
                       docker run -d -p 8080:8080 --name container1 public.ecr.aws/e5k4j6y8/test-ecr:${BUILD_NUMBER} 
                       """
+            }
             }
         }
         }

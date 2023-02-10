@@ -31,7 +31,7 @@
                     sh """
                       docker pull public.ecr.aws/e5k4j6y8/test-ecr:${BUILD_NUMBER}
                       docker ps -a | grep container1
-                      if [ $? == 0 ]
+                      if [ \$? == 0 ]
                       then
                       docker stop container1
                       docker rmi container1

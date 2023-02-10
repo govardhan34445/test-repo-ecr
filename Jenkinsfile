@@ -31,7 +31,7 @@
                     sh """
                       docker pull public.ecr.aws/e5k4j6y8/test-ecr:\${BUILD_NUMBER}
               
-                      docker run -d -p 8090:8090 --name container1 public.ecr.aws/e5k4j6y8/test-ecr:\${BUILD_NUMBER} 
+                      docker run -d -p 8090:80 --name container1 public.ecr.aws/e5k4j6y8/test-ecr:\${BUILD_NUMBER} 
          
                       """
             }

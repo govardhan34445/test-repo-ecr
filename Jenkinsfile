@@ -10,7 +10,10 @@
         stage("Build Docker Image"){
             steps{
 
-             sh "docker build -t test_image:${BUILD_NUMBER} ."
+             sh """
+             sudo su -
+             docker build -t test_image:${BUILD_NUMBER} .
+             """
             }
         }
         stage("Push to ecr registry"){

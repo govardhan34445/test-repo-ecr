@@ -2,7 +2,7 @@
      stages{
         stage("Checkout"){
             steps{
-                git branch: 'dev', credentialId: "git_hub_cred_id", url: "https://github.com/govardhan34445/test-repo-ecr.git"
+                git branch: 'dev', credentialsId: "git_hub_cred_id", url: "https://github.com/govardhan34445/test-repo-ecr.git"
             }
         }
         stage("Build Docker Image"){

@@ -1,12 +1,12 @@
     pipeline{
         agent any
      stages{
-        stage("Checkout"){
+        /*stage("Checkout"){
             steps{
                     git branch: 'main', credentialsId: 'git_hub_cred_id', url: 'https://github.com/govardhan34445/test-repo-ecr.git'
 
             }
-        }
+        }*/
         stage("Build Docker Image"){
             steps{
 

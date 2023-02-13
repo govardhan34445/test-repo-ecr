@@ -1,5 +1,5 @@
     pipeline{
-        agent any
+            agent { node { label "slave1" }}
      stages{
         stage("Checkout"){
             steps{
@@ -25,17 +25,61 @@
                 """
             }
         }
+        
         stage("Deploy container in server"){
             steps{
-            sshagent(['46d73466-13b7-4ec1-8a48-79278bde3816']) {
+                    script {
+
+                 def USER_INPUT = input(
+                    message: 'User input required - Do you want to proceed?',
+                    parameters: [
+                            [$class: 'ChoiceParameterDefinition',
+                             choices: ['no','yes'].join('\n'),
+                             name: 'input',
+                             description: 'Menu - select box option']
+                    ])
+                    echo "The answer is: ${USER_INPUT}"
+                    if( "${USER_INPUT}" == "yes"){
+                        sshagent(['46d73466-13b7-4ec1-8a48-79278bde3816']) {
+                                sh """
+                                docker pull public.ecr.aws/e5k4j6y8/test-ecr:\${BUILD_NUMBER}
+                        
+                                docker run -d -p 8090:80 --name container1 public.ecr.aws/e5k4j6y8/test-ecr:\${BUILD_NUMBER} 
+                    
+                                """
+                        }
+                   }
+                else {
+                   println "Skipping deployment"
+                }
+            
+            }
+            }
+        }
+        stage("Post Build Actions"){
+            steps{
+            
                     sh """
-                      docker pull public.ecr.aws/e5k4j6y8/test-ecr:\${BUILD_NUMBER}
-              
-                      docker run -d -p 8090:80 --name container1 public.ecr.aws/e5k4j6y8/test-ecr:\${BUILD_NUMBER} 
-         
+                      docker rmi public.ecr.aws/e5k4j6y8/test-ecr:\${BUILD_NUMBER}
                       """
             }
-            }
         }
         }
+post{
+
+        success{
+        emailext to: 'govardhanr992@gmail.com',
+                subject: "Pipeline Build is over .. Build # is ..${env.BUILD_NUMBER} and Build status is.. ${currentBuild.result}.",
+                body: "Pipeline Build is over .. Build # is ..${env.BUILD_NUMBER} and Build status is.. ${currentBuild.result}.",
+                replyTo: 'govardhanr992@gmail.com'
+        }
+ 
+        failure{
+        emailext to: 'govardhanr992@gmail.com',
+                subject: "Pipeline Build is over .. Build # is ..${env.BUILD_NUMBER} and Build status is.. ${currentBuild.result}.",
+                body: "Pipeline Build is over .. Build # is ..${env.BUILD_NUMBER} and Build status is.. ${currentBuild.result}.",
+                replyTo: 'govardhanr992@gmail.com'
+        }
+ 
+}
         }
